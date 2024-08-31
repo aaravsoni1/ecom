@@ -1,8 +1,11 @@
 package com.ecom.ecom.service;
 
-import com.ecom.ecom.entity.User;
 import com.ecom.ecom.payload.UserDto;
 import com.ecom.ecom.repository.UserRepository;
+import com.ecom.ecom.entity.User;
+import org.springframework.stereotype.Service;
+
+@Service
 
 public class UserServiceImpl implements UserService{
 
