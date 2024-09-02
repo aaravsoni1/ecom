@@ -34,9 +34,11 @@ public class Product {
     @Column(name = "img_url", nullable = false)
     private String img_url;
 
+    @Temporal(TemporalType.DATE)
     @Column(name = "created_at", nullable = false)
     private Date created_at;
 
+    @Temporal(TemporalType.DATE)
     @Column(name = "updated_at")
     private Date updated_at;
 
