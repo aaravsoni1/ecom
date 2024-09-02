@@ -1,7 +1,9 @@
 package com.ecom.ecom.service;
 
 import com.ecom.ecom.payload.ReviewDto;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ReviewImpl implements ReviewService{
     @Override
     public ReviewDto addReview(ReviewDto review) {

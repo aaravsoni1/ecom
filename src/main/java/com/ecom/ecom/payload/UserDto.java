@@ -1,9 +1,12 @@
 package com.ecom.ecom.payload;
 
+import com.ecom.ecom.enums.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+
+import javax.management.relation.Role;
 
 @Data
 public class UserDto {
@@ -16,11 +19,7 @@ public class UserDto {
     private String email;
     @NotEmpty
     private String password;
-    @NotEmpty
-    private String phoneno;
     @NotNull
-    private String role;
-    @NotNull
-    private String createdat;
+    private UserRole userRole;
 
 }
