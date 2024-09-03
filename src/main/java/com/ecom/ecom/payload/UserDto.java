@@ -11,15 +11,16 @@ import javax.management.relation.Role;
 @Data
 public class UserDto {
     private long id;
-    @NotEmpty
+
     private String firstname;
-    @NotEmpty
+
     private String lastname;
+    @NotNull
     @Email
     private String email;
-    @NotEmpty
+
     private String password;
-    @NotNull
+
     private UserRole userRole;
 
 }

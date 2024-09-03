@@ -5,7 +5,9 @@ import org.springframework.security.core.userdetails.User;
 
 public interface UserService {
 
-    UserDto createUser(UserDto dto);
+//    UserDto createUser(UserDto dto);
 
     User loadUserByUsername(String username);
+
+//    UserDto createUser(UserDto );
 }

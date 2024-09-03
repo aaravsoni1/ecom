@@ -22,10 +22,10 @@ public class UserController {
         this.userRepository = userRepository;
         this.userService = userService;
     }
-
-    @PostMapping("/createuser")
-    public ResponseEntity<?> createUser(@RequestBody UserDto dto) {
-        UserDto createdUser= userService.createUser(dto);
-        return new ResponseEntity<>(createdUser,HttpStatus.CREATED);
-    }
+//
+//    @PostMapping("/createuser")
+//    public ResponseEntity<?> createUser(@RequestBody UserDto dto) {
+//        UserDto createdUser= userService.createUser(dto);
+//        return new ResponseEntity<>(createdUser,HttpStatus.CREATED);
+//    }
 }
