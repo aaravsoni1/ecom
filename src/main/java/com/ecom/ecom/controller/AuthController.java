@@ -43,7 +43,6 @@ public class AuthController {
 
     private final AuthService authService;
 
-
     @PostMapping("/authenticate")
     public void createAuthenticationToken(
             @RequestBody AuthenticationRequest authenticationRequest,
