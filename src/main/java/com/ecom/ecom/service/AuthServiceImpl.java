@@ -21,20 +21,18 @@ public class AuthServiceImpl implements AuthService{
 
     public UserDto createUser(SignupRequest signupRequest){
         User user = new User();
-
-        user.setFirstname(signupRequest.getFirstName());
-        user.setLastname(signupRequest.getLastName());
         user.setEmail(signupRequest.getEmail());
-        user.setPassword((signupRequest.getPassword()));
-        user.setRole(user.getRole());
+        user.setName(signupRequest.getName());
+        user.setPassword(bCryptPasswordEncoder.encode(signupRequest.getPassword()));
+        user.setRole(UserRole.CUSTOMER);
         User createdUser = userRepository.save(user);
 
         UserDto userDto = new UserDto();
         userDto.setId((createdUser.getId()));
-        userDto.setFirstname((createdUser.getFirstname()));
-        userDto.setLastname((createdUser.getLastname()));
+        userDto.setName((createdUser.getName()));
         userDto.setEmail((createdUser.getEmail()));
         userDto.setPassword((createdUser.getPassword()));
+        userDto.setUserRole((createdUser.getRole()));
 
         return userDto;
 
@@ -46,10 +44,10 @@ public class AuthServiceImpl implements AuthService{
     }
     @PostConstruct
     public void createAdminAccount(){
-        User adminAccount = userRepository.findByRole(UserRole.ADMIN);
+       User adminAccount = userRepository.findByRole(UserRole.ADMIN);
         if(null == adminAccount){
             User user = new User();
-            user.setFirstname("Admin");
+            user.setName("Admin");
             user.setEmail("admin@test.com");
             user.setRole(UserRole.ADMIN);
             user.setPassword(bCryptPasswordEncoder.encode("admin123"));
