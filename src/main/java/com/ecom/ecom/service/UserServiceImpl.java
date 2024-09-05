@@ -1,7 +1,6 @@
 package com.ecom.ecom.service;
 
 import com.ecom.ecom.entity.User;
-import com.ecom.ecom.payload.UserDto;
 import com.ecom.ecom.repository.UserRepository;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -32,8 +31,8 @@ public class UserServiceImpl implements UserService{
 //    User dtoToEntity(UserDto dto) {
 //        return null;
 //    }
-
-
+//
+//    org.springframework.security.core.userdetails.User
 
     @Override
     public org.springframework.security.core.userdetails.User loadUserByUsername(String username) throws UsernameNotFoundException{

@@ -65,6 +65,9 @@ public class AuthController {
                             .put("role",optionalUser.get().getRole())
                             .toString()
                     );
+            response.addHeader("Access-Control-Expose-Headers","Authorization");
+            response.addHeader("Access-Control-Allow-Headers","Authorization, X-PINGOTHER, Origin, " +
+                    "X-Requested-With,Content-Type, Accept. X-Custom-header");
             
             response.addHeader(HEADER_STRING,TOKEN_PREFIX + jwt);
         }
@@ -73,7 +76,7 @@ public class AuthController {
      @PostMapping("/sign-up")
     public ResponseEntity<?> signupUser(@RequestBody SignupRequest signupRequest){
         if(authService.hasUserWithEmail(signupRequest.getEmail())){
-            return new ResponseEntity<>("user already exists", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("user already exists", HttpStatus.NOT_ACCEPTABLE);
         }
 
         UserDto userDto = authService.createUser(signupRequest);
