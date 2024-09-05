@@ -22,9 +22,9 @@ public class BucketService {
             File conFile = new File(System.getProperty("java.io.tmpdir") + "/" + file.getOriginalFilename());
             try {
                 file.transferTo(conFile);
-                String folderPath = "product_images/";
+                String folderPath = "/product_images/";
                 String key = folderPath + conFile.getName();
-                amazonS3.putObject(bucketName, key, conFile);
+                amazonS3.putObject(bucketName, conFile.getName(), conFile);
                 return amazonS3.getUrl(bucketName, file.getOriginalFilename()).toString();
             } catch (AmazonS3Exception s3Exception) {
                 return "Unable to upload file : " + s3Exception.getMessage();
@@ -42,7 +42,7 @@ public class BucketService {
             File conFile = new File(System.getProperty("java.io.tmpdir") + "/" + file.getOriginalFilename());
             try {
                 file.transferTo(conFile);
-                String folderPath = "review_images/";
+                String folderPath = "/review_images/";
                 String key = folderPath + conFile.getName();
                 amazonS3.putObject(bucketName, key, conFile);
                 return amazonS3.getUrl(bucketName, file.getOriginalFilename()).toString();
