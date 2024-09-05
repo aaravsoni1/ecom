@@ -38,7 +38,8 @@ public class JwtUtil {
 
     private SecretKey getSignkey() {
         byte[] keybytes = Decoders.BASE64.decode(SECRET);
-        return Keys.secretKeyFor(SignatureAlgorithm.HS256);
+//        return Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        return Keys.hmacShaKeyFor(keybytes);
     }
     public String extractUsername(String token){
         return extractClaim(token, Claims::getSubject);
@@ -52,11 +53,13 @@ public class JwtUtil {
     return Jwts.parserBuilder().setSigningKey(getSignkey()).build().parseClaimsJws(token).getBody();
     }
 
-    private Boolean isTokenExpired(String token){
+    private Boolean isTokenExpired(String token)
+    {
         return extractExpiration(token).before(new Date());
     }
 
     private Date extractExpiration(String token) {
+
         return extractClaim(token, Claims::getExpiration);
     }
     public Boolean validateToken(String token, UserDetails userDetails) {
