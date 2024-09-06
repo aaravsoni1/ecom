@@ -12,9 +12,6 @@ import javax.management.relation.Role;
 public class UserDto {
     private long id;
 
-//    private String firstname;
-//
-//    private String lastname;
     private String email;
 
     private String name;
