@@ -29,6 +29,8 @@ public class WebSecurityConfiguration {
         return http
                 .csrf()
                 .disable()
+                .cors()
+                .and()
                 .authorizeHttpRequests()
                 .requestMatchers("/authenticate","/sign-up","/order/**")
                 .permitAll()

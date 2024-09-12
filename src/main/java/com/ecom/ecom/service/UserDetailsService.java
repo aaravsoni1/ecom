@@ -6,7 +6,7 @@ public interface UserDetailsService {
 
 //    UserDto createUser(UserDto dto);
 
-    UserDetails loadUserByUsername(String name);
+//    UserDetails loadUserByUsername(String name);
 
 //    UserDto createUser(UserDto );
 }

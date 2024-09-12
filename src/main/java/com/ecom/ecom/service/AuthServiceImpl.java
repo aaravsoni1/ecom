@@ -19,6 +19,7 @@ public class AuthServiceImpl implements AuthService{
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Override
     public UserDto createUser(SignupRequest signupRequest){
         User user = new User();
         user.setEmail(signupRequest.getEmail());
