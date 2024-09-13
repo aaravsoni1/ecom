@@ -3,6 +3,8 @@ package com.ecom.ecom.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Getter
 @Setter
@@ -24,5 +26,11 @@ public class CartItem {
 
     @Column(name = "quantity", nullable = false)
     private int quantity;
+
+    @Column(name = "price", nullable = false)
+    @JdbcTypeCode(SqlTypes.INTEGER)
+    private Integer price;
+
+
 
 }

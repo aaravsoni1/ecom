@@ -45,7 +45,8 @@ public class CartServiceImpl implements CartService{
     public CartDTO addItemToCart(Long userId, Long productId, int quantity) {
         Cart cart = cartRepository.findByUserId(userId).orElseGet(() -> {
             Cart newCart = new Cart();
-            newCart.setUser(userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found")));
+            newCart.setUser(userRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("User not found")));
             return cartRepository.save(newCart);
         });
 
@@ -54,22 +55,27 @@ public class CartServiceImpl implements CartService{
                 .findFirst();
 
         if (existingCartItem.isPresent()) {
+            // Update existing cart item
             CartItem cartItem = existingCartItem.get();
             cartItem.setQuantity(cartItem.getQuantity() + quantity);
+            cartItem.setPrice(cartItem.getQuantity() * cartItem.getProduct().getPrice()); // Update price
             cartItemRepository.save(cartItem);
         } else {
+            // Add new cart item
             Product product = productRepository.findById(productId)
                     .orElseThrow(() -> new RuntimeException("Product not found"));
             CartItem cartItem = new CartItem();
             cartItem.setCart(cart);
             cartItem.setProduct(product);
             cartItem.setQuantity(quantity);
+            cartItem.setPrice(quantity * product.getPrice()); // Set price for the new item
             cart.getCartItems().add(cartItem);
             cartItemRepository.save(cartItem);
         }
 
         return convertToDto(cartRepository.save(cart));
     }
+
 
 
     public CartDTO removeItemFromCart(Long userId, Long productId) {
