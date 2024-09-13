@@ -1,26 +1,56 @@
 package com.ecom.ecom.service;
 
+import com.ecom.ecom.entity.Product;
 import com.ecom.ecom.entity.Review;
+import com.ecom.ecom.entity.User;
 import com.ecom.ecom.payload.ReviewDto;
+import com.ecom.ecom.payload.ReviewImageDto;
+import com.ecom.ecom.repository.ProductRepository;
+import com.ecom.ecom.repository.ReviewImageRepository;
 import com.ecom.ecom.repository.ReviewRepository;
+import com.ecom.ecom.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Service
+
 public class ReviewImpl implements ReviewService{
 
     private ReviewRepository reviewRepository;
+    private ProductRepository productRepository;
+    private UserRepository userRepository;
+    private ReviewImageServiceImpl imageService;
+    private final ReviewImageRepository reviewImageRepository;
 
-    public ReviewImpl(ReviewRepository reviewRepository) {
+    public ReviewImpl(ReviewRepository reviewRepository,
+                      ProductRepository productRepository,
+                      UserRepository userRepository,
+                      ReviewImageServiceImpl imageService,
+                      ReviewImageRepository reviewImageRepository) {
         this.reviewRepository = reviewRepository;
+        this.productRepository = productRepository;
+        this.userRepository = userRepository;
+        this.imageService = imageService;
+        this.reviewImageRepository = reviewImageRepository;
     }
 
     @Override
-    public ReviewDto addReview(ReviewDto review) {
-        Review entity = DtoToEntity(review);
-        Review saved = reviewRepository.save(entity);
-        return EntityToDto(saved);
+    public ReviewDto addReview(ReviewDto review, Long product_id, User user, MultipartFile file) {
+        Optional<Product> opProduct = productRepository.findProductById(product_id);
+        Optional<User> opUser = userRepository.findById(user.getId());
+        if(opProduct.isPresent() && opUser.isPresent()) {
+            Review entity = DtoToEntity(review);
+            entity.setProduct(opProduct.get());
+            entity.setUser(opUser.get());
+            ReviewImageDto imageDto = imageService.uploadReviewImage(file, "projectecom1");
+            entity.setImage_url(imageDto.getImageUrl());
+            Review saved = reviewRepository.save(entity);
+            return EntityToDto(saved);
+        }
+        return null;
     }
 
     private ReviewDto EntityToDto(Review entity) {
@@ -30,6 +60,8 @@ public class ReviewImpl implements ReviewService{
         dto.setRating(entity.getRating());
         dto.setImage_url(entity.getImage_url());
         dto.setCreated_at(entity.getCreated_at());
+        dto.setProduct_id(entity.getProduct().getId());
+        dto.setUser_id(entity.getUser().getId());
         return dto;
     }
 
@@ -38,7 +70,6 @@ public class ReviewImpl implements ReviewService{
         entity.setId(dto.getId());
         entity.setComment(dto.getComment());
         entity.setRating(dto.getRating());
-        entity.setImage_url(dto.getImage_url());
         entity.setCreated_at(new Date());
         return entity;
     }
@@ -75,11 +106,23 @@ public class ReviewImpl implements ReviewService{
     }
 
     @Override
-    public ReviewDto getAllReviews() {
-        Iterable<Review> all = reviewRepository.findAll();
+    public ReviewDto getAllReviews(Long productId) {
+        Iterable<Review> all = reviewRepository.getAllReviewsByProduct(productId);
         while(all.iterator().hasNext()) {
             ReviewDto dto = EntityToDto(all.iterator().next());
             return dto;
+        }
+        return null;
+    }
+
+    @Override
+    public ReviewDto verifyUser(User user, Long product_id) {
+        Optional<Product> opProduct = productRepository.findProductById(product_id);
+        if(opProduct.isPresent()) {
+            Long p = opProduct.get().getId();
+            Long u = user.getId();
+            Review entity = reviewRepository.findReviewByProduct(u, p);
+            return EntityToDto(entity);
         }
         return null;
     }

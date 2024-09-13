@@ -36,6 +36,7 @@ public class AddressImpl implements AddressService{
     }
     public AddressDto EntityToDto(Address entity){
         AddressDto dto = new AddressDto();
+        dto.setId(entity.getId());
         dto.setFirstName(entity.getFirstName());
         dto.setLastName(entity.getLastName());
         dto.setStreetAdress(entity.getStreetAdress());

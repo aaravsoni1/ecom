@@ -4,5 +4,6 @@ import com.ecom.ecom.payload.ReviewImageDto;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface ReviewImageService {
-    public ReviewImageDto uploadReviweImage(MultipartFile file, String bucketName);
+
+    ReviewImageDto uploadReviewImage(MultipartFile file, String bucketName);
 }

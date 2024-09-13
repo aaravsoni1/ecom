@@ -17,13 +17,13 @@ public class ReviewImageServiceImpl implements ReviewImageService{
         this.imageRepository = imageRepository;
     }
     @Override
-    public ReviewImageDto uploadReviweImage(MultipartFile file, String bucketName) {
+    public ReviewImageDto uploadReviewImage(MultipartFile file, String bucketName) {
         String url = bucketService.uploadProductImage(file, bucketName);
         ReviewImage image = new ReviewImage();
         image.setImage_url(url);
         ReviewImage saved = imageRepository.save(image);
         ReviewImageDto dto = new ReviewImageDto();
-        dto.setIg(saved.getId());
+        dto.setId(saved.getId());
         dto.setImageUrl(saved.getImage_url());
         return dto;
     }

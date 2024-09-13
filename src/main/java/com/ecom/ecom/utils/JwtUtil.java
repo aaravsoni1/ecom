@@ -38,8 +38,8 @@ import java.util.function.Function;
 
     private SecretKey getSignkey() {
         byte[] keybytes = Decoders.BASE64.decode(SECRET);
-//        return Keys.secretKeyFor(SignatureAlgorithm.HS256);
-        return Keys.hmacShaKeyFor(keybytes);
+        return Keys.secretKeyFor(SignatureAlgorithm.HS256);
+//        return Keys.hmacShaKeyFor(keybytes);
     }
     public String extractUsername(String token){
         return extractClaim(token, Claims::getSubject);
