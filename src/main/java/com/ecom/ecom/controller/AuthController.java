@@ -78,6 +78,7 @@ public class AuthController {
 
         return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
     }
+
      @PostMapping("/sign-up")
     public ResponseEntity<?> signupUser(@RequestBody SignupRequest signupRequest){
         if(authService.hasUserWithEmail(signupRequest.getEmail())){
