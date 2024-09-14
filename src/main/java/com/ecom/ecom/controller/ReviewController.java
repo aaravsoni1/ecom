@@ -5,6 +5,7 @@ import com.ecom.ecom.payload.ReviewDto;
 import com.ecom.ecom.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -13,20 +14,20 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.management.BadAttributeValueExpException;
 
 @RestController
-@RequestMapping("/api/review")
+@RequestMapping(value = "/api/review",  consumes = {"multipart/form-data", "application/octet-stream"})
 public class ReviewController {
 
     @Autowired
     private ReviewService reviewService;
 
-    @PostMapping("/add")
-    public ResponseEntity<?> createReview(@AuthenticationPrincipal User user ,
-                                          @RequestBody ReviewDto dto,
-                                          @RequestParam Long product_id,
-                                          @RequestParam MultipartFile file)
+    @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> createReview(@AuthenticationPrincipal User user,
+                                          @ModelAttribute ReviewDto dto,   // Use @ModelAttribute for text data
+                                          @RequestParam("file") MultipartFile file,  // Use @RequestParam for file
+                                          @RequestParam Long productId)
     {
-        if(reviewService.verifyUser(user, product_id)==null){
-            ReviewDto added = reviewService.addReview(dto, product_id, user, file);
+        if(reviewService.verifyUser(user, productId)==null){
+            ReviewDto added = reviewService.addReview(dto, productId, user, file);
                 return new ResponseEntity<>(added, HttpStatus.CREATED);
         }
         else{
