@@ -31,7 +31,8 @@ import java.util.function.Function;
                .setSubject(userName)
                .setIssuedAt(new Date(System.currentTimeMillis()))
                .setExpiration(new Date(System.currentTimeMillis() + 10000 * 60 * 30)) // 10 minutes
-               .signWith(getSignkey(), SignatureAlgorithm.HS256).compact();
+               .signWith(SignatureAlgorithm.HS256,SECRET)
+               .compact();
 
 
     }
@@ -50,7 +51,7 @@ import java.util.function.Function;
    }
 
     private Claims extractAllClaims(String token) {
-    return Jwts.parserBuilder().setSigningKey(getSignkey()).build().parseClaimsJws(token).getBody();
+    return Jwts.parserBuilder().setSigningKey(SECRET).build().parseClaimsJws(token).getBody();
     }
 
     private Boolean isTokenExpired(String token)

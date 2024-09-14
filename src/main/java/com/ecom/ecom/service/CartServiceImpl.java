@@ -32,6 +32,7 @@ public class CartServiceImpl implements CartService{
     private UserRepository userRepository;
 
 
+    @Override
     public CartDTO getCartByUserId(Long userId) {
         Cart cart = cartRepository.findByUserId(userId).orElseGet(() -> {
             Cart newCart = new Cart();
@@ -42,6 +43,7 @@ public class CartServiceImpl implements CartService{
     }
 
 
+    @Override
     public CartDTO addItemToCart(Long userId, Long productId, int quantity) {
         Cart cart = cartRepository.findByUserId(userId).orElseGet(() -> {
             Cart newCart = new Cart();
@@ -130,7 +132,7 @@ public class CartServiceImpl implements CartService{
         cartItemDTO.setProductId(cartItem.getProduct().getId());
         cartItemDTO.setQuantity(cartItem.getQuantity());
         cartItemDTO.setProductName(cartItem.getProduct().getName());
-        cartItemDTO.setProductPrice(cartItem.getProduct().getPrice());
+        cartItemDTO.setProductPrice(cartItem.getPrice());
         return cartItemDTO;
     }
 
