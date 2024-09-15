@@ -2,12 +2,16 @@ package com.ecom.ecom.controller;
 
 import com.ecom.ecom.entity.User;
 import com.ecom.ecom.payload.ReviewDto;
+import com.ecom.ecom.repository.UserRepository;
 import com.ecom.ecom.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,14 +24,17 @@ public class ReviewController {
     @Autowired
     private ReviewService reviewService;
 
+    @Autowired
+    private UserRepository userRepo;
+
     @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> createReview(@AuthenticationPrincipal User user,
+    public ResponseEntity<?> createReview(@AuthenticationPrincipal UserDetails userDetails,
                                           @ModelAttribute ReviewDto dto,   // Use @ModelAttribute for text data
                                           @RequestParam("file") MultipartFile file,  // Use @RequestParam for file
                                           @RequestParam Long productId)
     {
-        if(reviewService.verifyUser(user, productId)==null){
-            ReviewDto added = reviewService.addReview(dto, productId, user, file);
+        if(reviewService.verifyUser(userDetails, productId)==null){
+            ReviewDto added = reviewService.addReview(dto, productId, userDetails, file);
                 return new ResponseEntity<>(added, HttpStatus.CREATED);
         }
         else{

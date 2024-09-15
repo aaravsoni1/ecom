@@ -9,6 +9,7 @@ import com.ecom.ecom.repository.ProductRepository;
 import com.ecom.ecom.repository.ReviewImageRepository;
 import com.ecom.ecom.repository.ReviewRepository;
 import com.ecom.ecom.repository.UserRepository;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,21 +38,7 @@ public class ReviewImpl implements ReviewService{
         this.reviewImageRepository = reviewImageRepository;
     }
 
-    @Override
-    public ReviewDto addReview(ReviewDto review, Long product_id, User user, MultipartFile file) {
-        Optional<Product> opProduct = productRepository.findProductById(product_id);
-        Optional<User> opUser = userRepository.findById(user.getId());
-        if(opProduct.isPresent() && opUser.isPresent()) {
-            Review entity = DtoToEntity(review);
-            entity.setProduct(opProduct.get());
-            entity.setUser(opUser.get());
-            ReviewImageDto imageDto = imageService.uploadReviewImage(file, "projectecom1");
-            entity.setImage_url(imageDto.getImageUrl());
-            Review saved = reviewRepository.save(entity);
-            return EntityToDto(saved);
-        }
-        return null;
-    }
+
 
     private ReviewDto EntityToDto(Review entity) {
         ReviewDto dto = new ReviewDto();
@@ -72,6 +59,24 @@ public class ReviewImpl implements ReviewService{
         entity.setRating(dto.getRating());
         entity.setCreated_at(new Date());
         return entity;
+    }
+
+    @Override
+    public ReviewDto addReview(ReviewDto review, Long product_id, UserDetails userDetails, MultipartFile file) {
+        Optional<Product> opProduct = productRepository.findProductById(product_id);
+        String username = userDetails.getUsername();
+
+        Optional<User> opUser = userRepository.findByName(username);
+        if(opProduct.isPresent() && opUser.isPresent()) {
+            Review entity = DtoToEntity(review);
+            entity.setProduct(opProduct.get());
+            entity.setUser(opUser.get());
+            ReviewImageDto imageDto = imageService.uploadReviewImage(file);
+            entity.setImage_url(imageDto.getImageUrl());
+            Review saved = reviewRepository.save(entity);
+            return EntityToDto(saved);
+        }
+        return null;
     }
 
     @Override
@@ -116,14 +121,17 @@ public class ReviewImpl implements ReviewService{
     }
 
     @Override
-    public ReviewDto verifyUser(User user, Long product_id) {
+    public Review verifyUser(UserDetails userDetails, Long product_id) {
+        Optional<User> user = userRepository.findByName(userDetails.getUsername());
         Optional<Product> opProduct = productRepository.findProductById(product_id);
         if(opProduct.isPresent()) {
             Long p = opProduct.get().getId();
-            Long u = user.getId();
+            Long u = user.get().getId();
             Review entity = reviewRepository.findReviewByProduct(u, p);
-            return EntityToDto(entity);
+            return entity;
         }
         return null;
     }
+
+
 }
