@@ -66,7 +66,7 @@ public class ReviewImpl implements ReviewService{
         Optional<Product> opProduct = productRepository.findProductById(product_id);
         String username = userDetails.getUsername();
 
-        Optional<User> opUser = userRepository.findByName(username);
+        Optional<User> opUser = userRepository.findFirstByEmail(username);
         if(opProduct.isPresent() && opUser.isPresent()) {
             Review entity = DtoToEntity(review);
             entity.setProduct(opProduct.get());
@@ -89,8 +89,8 @@ public class ReviewImpl implements ReviewService{
     }
 
     @Override
-    public ReviewDto updateReview(ReviewDto dto) {
-        Review review = reviewRepository.findById(dto.getId()).orElse(null);
+    public ReviewDto updateReview(Long reviewid ,ReviewDto dto) {
+        Review review = reviewRepository.findById(reviewid).orElse(null);
         if(review != null){
             review.setUpdated_at(new Date());
             ReviewDto reviewDto = EntityToDto(review);
@@ -122,9 +122,9 @@ public class ReviewImpl implements ReviewService{
 
     @Override
     public Review verifyUser(UserDetails userDetails, Long product_id) {
-        Optional<User> user = userRepository.findByName(userDetails.getUsername());
+        Optional<User> user = userRepository.findFirstByEmail(userDetails.getUsername());
         Optional<Product> opProduct = productRepository.findProductById(product_id);
-        if(opProduct.isPresent()) {
+        if(opProduct.isPresent() && user.isPresent()) {
             Long p = opProduct.get().getId();
             Long u = user.get().getId();
             Review entity = reviewRepository.findReviewByProduct(u, p);

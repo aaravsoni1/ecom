@@ -21,7 +21,7 @@ public class ReviewImageServiceImpl implements ReviewImageService{
     }
     @Override
     public ReviewImageDto uploadReviewImage(MultipartFile file) {
-        String url = bucketService.uploadProductImage(file, bucketName);
+        String url = bucketService.uploadReviewImage(file, bucketName);
         ReviewImage image = new ReviewImage();
         image.setImage_url(url);
         ReviewImage saved = imageRepository.save(image);
