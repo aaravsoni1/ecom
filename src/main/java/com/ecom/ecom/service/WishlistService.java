@@ -5,8 +5,11 @@ import com.ecom.ecom.payload.WishlistDto;
 import java.util.List;
 
 public interface WishlistService {
-    public WishlistDto addToWishlist(WishlistDto dto);
-    public WishlistDto removeFromWishlist(WishlistDto dto);
-    public WishlistDto undoFromWishlist(WishlistDto dto);
-    public List<WishlistDto> getAllWishlists();
+
+
+    WishlistDto addProductToWishlist(Long userId, Long productId);
+
+    boolean removeProductFromWishlist(Long wishlistId);
+
+    List<WishlistDto> getWishlistByUser(Long userId);
 }

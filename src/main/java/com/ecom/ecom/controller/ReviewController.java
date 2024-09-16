@@ -2,12 +2,14 @@ package com.ecom.ecom.controller;
 
 import com.ecom.ecom.entity.User;
 import com.ecom.ecom.payload.ReviewDto;
+import com.ecom.ecom.repository.UserRepository;
 import com.ecom.ecom.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,6 +18,9 @@ import javax.management.BadAttributeValueExpException;
 @RestController
 @RequestMapping(value = "/api/review",  consumes = {"multipart/form-data", "application/octet-stream"})
 public class ReviewController {
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private ReviewService reviewService;
@@ -28,7 +33,7 @@ public class ReviewController {
     {
         if(reviewService.verifyUser(user, productId)==null){
             ReviewDto added = reviewService.addReview(dto, productId, user, file);
-                return new ResponseEntity<>(added, HttpStatus.CREATED);
+            return new ResponseEntity<>(added, HttpStatus.CREATED);
         }
         else{
 

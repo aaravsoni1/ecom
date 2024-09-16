@@ -31,7 +31,6 @@ public class CartServiceImpl implements CartService{
     @Autowired
     private UserRepository userRepository;
 
-
     @Override
     public CartDTO getCartByUserId(Long userId) {
         Cart cart = cartRepository.findByUserId(userId).orElseGet(() -> {
@@ -41,7 +40,6 @@ public class CartServiceImpl implements CartService{
         });
         return convertToDto(cart);
     }
-
 
     @Override
     public CartDTO addItemToCart(Long userId, Long productId, int quantity) {
@@ -79,7 +77,7 @@ public class CartServiceImpl implements CartService{
     }
 
 
-
+    @Override
     public CartDTO removeItemFromCart(Long userId, Long productId) {
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Cart not found for user"));
@@ -90,7 +88,7 @@ public class CartServiceImpl implements CartService{
         return convertToDto(cart);
     }
 
-
+    @Override
     public CartDTO updateItemQuantity(Long userId, Long productId, int quantity) {
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Cart not found for user"));
@@ -132,7 +130,7 @@ public class CartServiceImpl implements CartService{
         cartItemDTO.setProductId(cartItem.getProduct().getId());
         cartItemDTO.setQuantity(cartItem.getQuantity());
         cartItemDTO.setProductName(cartItem.getProduct().getName());
-        cartItemDTO.setProductPrice(cartItem.getPrice());
+        cartItemDTO.setProductPrice(cartItem.getProduct().getPrice());
         return cartItemDTO;
     }
 

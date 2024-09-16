@@ -27,10 +27,8 @@ public class CartItem {
     @Column(name = "quantity", nullable = false)
     private int quantity;
 
-    @Column(name = "price", nullable = false)
-    @JdbcTypeCode(SqlTypes.INTEGER)
-    private Integer price;
-
+    @Column(name = "price")
+    private double price;
 
 
 }
