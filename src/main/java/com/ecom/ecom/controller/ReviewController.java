@@ -39,7 +39,7 @@ public class ReviewController {
         }
         else{
 
-            return new ResponseEntity<>("User not authorized to add review for this product", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("User not authorized to add review for this product", HttpStatus.OK);
         }
     }
 

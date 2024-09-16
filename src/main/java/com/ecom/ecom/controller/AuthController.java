@@ -3,6 +3,7 @@ package com.ecom.ecom.controller;
 
 import com.ecom.ecom.entity.User;
 import com.ecom.ecom.payload.AuthenticationRequest;
+import com.ecom.ecom.payload.LoginDto;
 import com.ecom.ecom.payload.SignupRequest;
 import com.ecom.ecom.payload.UserDto;
 import com.ecom.ecom.repository.UserRepository;
@@ -72,8 +73,11 @@ public class AuthController {
             response.addHeader("Access-Control-Allow-Headers", "Authorization, X-PINGOTHER, Origin, " +
                     "X-Requested-With,Content-Type, Accept, X-Custom-header");
             response.addHeader(HEADER_STRING, TOKEN_PREFIX + jwt);
+            LoginDto loginDto = new LoginDto();
+            loginDto.setType("Jwt Type");
+            loginDto.setToken(TOKEN_PREFIX + jwt.toString());
 
-            return ResponseEntity.ok(jsonResponse.toString());  // Return the JSON in response body
+            return new ResponseEntity<>(loginDto, HttpStatus.OK); // Return the JSON in response body
         }
 
         return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
