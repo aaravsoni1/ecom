@@ -5,5 +5,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface ReviewImageService {
 
-    ReviewImageDto uploadReviewImage(MultipartFile file, String bucketName);
+    ReviewImageDto uploadReviewImage(MultipartFile file);
+    ReviewImageDto deleteReviewImage(String fileName);
 }

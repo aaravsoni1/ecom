@@ -26,6 +26,6 @@ public class ImageController {
     @PostMapping("/upload/reviewImage/{bucketName}")
     public ResponseEntity<?> uploadReviewFile(@RequestParam MultipartFile file,
                                                    @PathVariable String bucketName) {
-        return new ResponseEntity<>(reviewImageService.uploadReviewImage(file, bucketName), HttpStatus.OK);
+        return new ResponseEntity<>(reviewImageService.uploadReviewImage(file), HttpStatus.OK);
     }
 }
