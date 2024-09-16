@@ -43,9 +43,9 @@ public class ReviewController {
         }
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<?> updateReview(@RequestBody ReviewDto dto){
-        ReviewDto updated = reviewService.updateReview(dto);
+    @PutMapping("/update/{reviewid}")
+    public ResponseEntity<?> updateReview(@PathVariable Long reviewid , @RequestBody ReviewDto dto){
+        ReviewDto updated = reviewService.updateReview(reviewid, dto);
         if(updated == null){
             return new ResponseEntity<>("Review Not Found", HttpStatus.NOT_FOUND);
         }
