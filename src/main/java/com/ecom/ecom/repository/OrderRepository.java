@@ -1,7 +1,10 @@
-//package com.ecom.ecom.repository;
-//
-//import com.ecom.ecom.entity.Order;
-//import org.springframework.data.jpa.repository.JpaRepository;
-//
-//public interface OrderRepository extends JpaRepository<Order, Long> {
-//}
+package com.ecom.ecom.repository;
+
+import com.ecom.ecom.entity.Order;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface OrderRepository extends JpaRepository<Order, Long> {
+    List<Order> findAllByUserId(Long userId);
+}

@@ -1,14 +1,20 @@
 package com.ecom.ecom.payload;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
+@Getter
+@Setter
 @Data
 public class OrderDto {
-    private Long id;
-    private Integer total_price;
+    private Long orderId;
+    private Long userId;
+    private String orderDate;
     private String status;
-    private Date createdAt;
-    private Date updatedAt;
+    private List<OrderItemDto> orderItems;
+
 }
