@@ -6,12 +6,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.management.BadAttributeValueExpException;
+import java.util.List;
 
 public interface ReviewService {
     public ReviewDto addReview(ReviewDto review, Long product_id, UserDetails user, MultipartFile file);
     public ReviewDto getReviewById(Long dto);
     public ReviewDto updateReview(Long reviewid ,ReviewDto review);
     public boolean deleteReview(Long reviewId);
-    public ReviewDto getAllReviews(Long productId);
+    public List<ReviewDto> getAllReviews(Long productId);
     public Review verifyUser(UserDetails user, Long product_id);
 }

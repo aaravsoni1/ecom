@@ -7,6 +7,11 @@ import com.ecom.ecom.repository.ReviewImageRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class ReviewImageServiceImpl implements ReviewImageService{
 
@@ -31,6 +36,27 @@ public class ReviewImageServiceImpl implements ReviewImageService{
         return dto;
     }
 
+    public ReviewImageDto EntityToDto(ReviewImage entity){
+        ReviewImageDto dto = new ReviewImageDto();
+        dto.setId(entity.getId());
+        dto.setImageUrl(entity.getImage_url());
+        return dto;
+    }
+
+    public ReviewImage DtoToEntity(ReviewImageDto dto){
+        ReviewImage entity = new ReviewImage();
+        entity.setId(dto.getId());
+        entity.setImage_url(dto.getImageUrl());
+        return entity;
+    }
+
+    public ReviewImage setUrls(String url){
+        ReviewImage reviewImage = new ReviewImage();
+        reviewImage.setImage_url(url);
+        imageRepository.save(reviewImage);
+        return reviewImage;
+    }
+
     @Override
     public ReviewImageDto deleteReviewImage(String fileName) {
         ReviewImage image = imageRepository.findByImage_url(fileName);
@@ -40,5 +66,18 @@ public class ReviewImageServiceImpl implements ReviewImageService{
         }
 
         return null;
+    }
+
+    @Override
+    public List<ReviewImageDto> uploadReviewImages(MultipartFile[] files) {
+        try {
+            List<String> urls = bucketService.uploadMultipleImageFiles(files, bucketName);
+            List<ReviewImage> images = urls.stream().map(url -> setUrls(url)).collect(Collectors.toList());
+            List<ReviewImageDto> dtoList = new ArrayList<ReviewImageDto>();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return List.of();
     }
 }

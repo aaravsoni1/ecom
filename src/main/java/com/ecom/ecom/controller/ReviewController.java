@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.management.BadAttributeValueExpException;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/review",  consumes = {"multipart/form-data", "application/octet-stream"})
@@ -39,11 +40,11 @@ public class ReviewController {
         }
         else{
 
-            return new ResponseEntity<>("User not authorized to add review for this product", HttpStatus.OK);
+            return new ResponseEntity<>("User has already posted a review.", HttpStatus.OK);
         }
     }
 
-    @PutMapping("/update/{reviewid}")
+    @PutMapping(value = "/update/{reviewid}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateReview(@PathVariable Long reviewid , @RequestBody ReviewDto dto){
         ReviewDto updated = reviewService.updateReview(reviewid, dto);
         if(updated == null){
@@ -63,10 +64,14 @@ public class ReviewController {
 
     @GetMapping("/product/{productId}")
     public ResponseEntity<?> getAllReviewsByProductId(@PathVariable Long productId){
-        return new ResponseEntity<>(reviewService.getAllReviews(productId), HttpStatus.OK);
+        List<ReviewDto> allReviews = reviewService.getAllReviews(productId);
+        if(allReviews == null){
+            return new ResponseEntity<>("No Reviews Found", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(allReviews, HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteReview(@PathVariable Long id){
         boolean deleted = reviewService.deleteReview(id);
         if(!deleted){

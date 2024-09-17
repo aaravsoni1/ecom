@@ -14,7 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 
@@ -93,9 +95,10 @@ public class ReviewImpl implements ReviewService{
         Review review = reviewRepository.findById(reviewid).orElse(null);
         if(review != null){
             review.setUpdated_at(new Date());
-            ReviewDto reviewDto = EntityToDto(review);
-            reviewRepository.save(review);
-            return reviewDto;
+            review.setRating(dto.getRating());
+            review.setComment(dto.getComment());
+            Review saved = reviewRepository.save(review);
+            return EntityToDto(saved);
         }
         return null;
     }
@@ -111,13 +114,10 @@ public class ReviewImpl implements ReviewService{
     }
 
     @Override
-    public ReviewDto getAllReviews(Long productId) {
-        Iterable<Review> all = reviewRepository.getAllReviewsByProduct(productId);
-        while(all.iterator().hasNext()) {
-            ReviewDto dto = EntityToDto(all.iterator().next());
-            return dto;
-        }
-        return null;
+    public List<ReviewDto> getAllReviews(Long productId) {
+        List<Review> all = reviewRepository.getAllReviewsByProduct(productId);
+        List<ReviewDto> allReviews = all.stream().map(review -> EntityToDto(review)).collect(Collectors.toList());
+        return allReviews;
     }
 
     @Override
