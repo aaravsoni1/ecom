@@ -108,11 +108,15 @@ public class ReviewImpl implements ReviewService{
             // Save ReviewImage entities to the repository
             reviewImageRepository.saveAll(reviewImages);
 
-            // Convert the saved Review entity to DTO and return
-            return EntityToDto(savedReview);
+            // **Re-fetch the Review entity with the associated images**
+            Review reloadedReview = reviewRepository.findById(savedReview.getId()).orElse(null);
+
+            // Convert the reloaded Review entity to DTO and return
+            return EntityToDto(reloadedReview);
         }
         return null;
     }
+
 
 
     @Override
