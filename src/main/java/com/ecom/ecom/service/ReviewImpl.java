@@ -98,21 +98,20 @@ public class ReviewImpl implements ReviewService{
             // Create and save ReviewImage entities using the savedReview
             List<ReviewImage> reviewImages = urls.stream()
                     .map(url -> {
+                        System.out.println("Saving image URL: " + url);  // Debugging line
                         ReviewImage reviewImage = new ReviewImage();
-                        reviewImage.setImageUrls(List.of(url));
-                        reviewImage.setReview(savedReview); // Use the savedReview with a valid ID
+                        reviewImage.setImageUrls(Collections.singletonList(url));
+                        reviewImage.setReview(savedReview);
                         return reviewImage;
                     })
                     .collect(Collectors.toList());
+            savedReview.setReviewImages(reviewImages);
 
-            // Save ReviewImage entities to the repository
+            Review saved = reviewRepository.save(savedReview);
+
             reviewImageRepository.saveAll(reviewImages);
 
-            // **Re-fetch the Review entity with the associated images**
-            Review reloadedReview = reviewRepository.findById(savedReview.getId()).orElse(null);
-
-            // Convert the reloaded Review entity to DTO and return
-            return EntityToDto(reloadedReview);
+            return EntityToDto(saved);
         }
         return null;
     }
