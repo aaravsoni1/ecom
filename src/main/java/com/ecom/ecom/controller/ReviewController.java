@@ -31,11 +31,11 @@ public class ReviewController {
     @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createReview(@AuthenticationPrincipal UserDetails userDetails,
                                           @ModelAttribute ReviewDto dto,   // Use @ModelAttribute for text data
-                                          @RequestParam("file") MultipartFile file,  // Use @RequestParam for file
+                                          @RequestParam("file") MultipartFile [] files,  // Use @RequestParam for file
                                           @RequestParam Long productId)
     {
         if(reviewService.verifyUser(userDetails, productId)==null){
-            ReviewDto added = reviewService.addReview(dto, productId, userDetails, file);
+            ReviewDto added = reviewService.addReview(dto, productId, userDetails, files);
                 return new ResponseEntity<>(added, HttpStatus.CREATED);
         }
         else{

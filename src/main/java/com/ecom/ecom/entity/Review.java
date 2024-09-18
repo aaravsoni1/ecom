@@ -6,6 +6,7 @@ import lombok.Setter;
 
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,9 +24,6 @@ public class Review {
     @Column(name = "comment", nullable = false, length = 500)
     private String comment;
 
-    @Column(name = "image_url")
-    private String image_url;
-
     @Temporal(TemporalType.DATE)
     @Column(name = "created_at")
     private Date created_at;
@@ -33,6 +31,9 @@ public class Review {
     @Temporal(TemporalType.DATE)
     @Column(name = "updated_at")
     private Date updated_at;
+
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ReviewImage> reviewImages;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

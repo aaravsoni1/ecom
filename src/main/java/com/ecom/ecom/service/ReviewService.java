@@ -9,7 +9,7 @@ import javax.management.BadAttributeValueExpException;
 import java.util.List;
 
 public interface ReviewService {
-    public ReviewDto addReview(ReviewDto review, Long product_id, UserDetails user, MultipartFile file);
+    public ReviewDto addReview(ReviewDto review, Long product_id, UserDetails user, MultipartFile [] files);
     public ReviewDto getReviewById(Long dto);
     public ReviewDto updateReview(Long reviewid ,ReviewDto review);
     public boolean deleteReview(Long reviewId);

@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.rmi.UnexpectedException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,12 +85,22 @@ public class BucketService {
     }
 
     public List<String> uploadMultipleImageFiles(MultipartFile[] files, String bucketName) throws IOException {
-        List<String> image_url_list = new ArrayList<String>();
-        for (MultipartFile file : files) {
-            String fileName = file.getOriginalFilename();
-            amazonS3.putObject(new PutObjectRequest(bucketName, fileName, file.getInputStream(), null));
-            image_url_list.add(amazonS3.getUrl(bucketName, fileName).toString());
+        if (files.length!=0) {
+            List<String> image_url_list = new ArrayList<String>();
+            for (MultipartFile file : files) {
+                try {
+                    File conFile = new File(System.getProperty("java.io.tmpdir") + "/" + file.getOriginalFilename());
+                    file.transferTo(conFile);
+                    String folderPath = "review_images/";
+                    String key = folderPath + conFile.getName();
+                    amazonS3.putObject(bucketName, key, conFile);
+                    image_url_list.add(amazonS3.getUrl(bucketName, key).toString());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return image_url_list;
         }
-        return image_url_list;
+        else throw new UnexpectedException("Unable to Upload Images");
     }
 }

@@ -1,6 +1,7 @@
 package com.ecom.ecom.service;
 
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.ecom.ecom.entity.Review;
 import com.ecom.ecom.entity.ReviewImage;
 import com.ecom.ecom.payload.ReviewImageDto;
 import com.ecom.ecom.repository.ReviewImageRepository;
@@ -24,38 +25,7 @@ public class ReviewImageServiceImpl implements ReviewImageService{
         this.bucketService = bucketService;
         this.imageRepository = imageRepository;
     }
-    @Override
-    public ReviewImageDto uploadReviewImage(MultipartFile file) {
-        String url = bucketService.uploadReviewImage(file, bucketName);
-        ReviewImage image = new ReviewImage();
-        image.setImage_url(url);
-        ReviewImage saved = imageRepository.save(image);
-        ReviewImageDto dto = new ReviewImageDto();
-        dto.setId(saved.getId());
-        dto.setImageUrl(saved.getImage_url());
-        return dto;
-    }
 
-    public ReviewImageDto EntityToDto(ReviewImage entity){
-        ReviewImageDto dto = new ReviewImageDto();
-        dto.setId(entity.getId());
-        dto.setImageUrl(entity.getImage_url());
-        return dto;
-    }
-
-    public ReviewImage DtoToEntity(ReviewImageDto dto){
-        ReviewImage entity = new ReviewImage();
-        entity.setId(dto.getId());
-        entity.setImage_url(dto.getImageUrl());
-        return entity;
-    }
-
-    public ReviewImage setUrls(String url){
-        ReviewImage reviewImage = new ReviewImage();
-        reviewImage.setImage_url(url);
-        imageRepository.save(reviewImage);
-        return reviewImage;
-    }
 
     @Override
     public ReviewImageDto deleteReviewImage(String fileName) {
@@ -69,15 +39,12 @@ public class ReviewImageServiceImpl implements ReviewImageService{
     }
 
     @Override
-    public List<ReviewImageDto> uploadReviewImages(MultipartFile[] files) {
+    public List<String> uploadReviewImages(MultipartFile[] files) {
         try {
             List<String> urls = bucketService.uploadMultipleImageFiles(files, bucketName);
-            List<ReviewImage> images = urls.stream().map(url -> setUrls(url)).collect(Collectors.toList());
-            List<ReviewImageDto> dtoList = new ArrayList<ReviewImageDto>();
-
+            return urls;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return List.of();
     }
 }

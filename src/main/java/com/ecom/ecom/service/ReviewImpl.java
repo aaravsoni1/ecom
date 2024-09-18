@@ -2,6 +2,7 @@ package com.ecom.ecom.service;
 
 import com.ecom.ecom.entity.Product;
 import com.ecom.ecom.entity.Review;
+import com.ecom.ecom.entity.ReviewImage;
 import com.ecom.ecom.entity.User;
 import com.ecom.ecom.payload.ReviewDto;
 import com.ecom.ecom.payload.ReviewImageDto;
@@ -28,6 +29,7 @@ public class ReviewImpl implements ReviewService{
     private ReviewImageServiceImpl imageService;
     private final ReviewImageRepository reviewImageRepository;
 
+
     public ReviewImpl(ReviewRepository reviewRepository,
                       ProductRepository productRepository,
                       UserRepository userRepository,
@@ -47,7 +49,9 @@ public class ReviewImpl implements ReviewService{
         dto.setId(entity.getId());
         dto.setComment(entity.getComment());
         dto.setRating(entity.getRating());
-        dto.setImage_url(entity.getImage_url());
+        dto.setImage_url(entity.getReviewImages().stream()
+                .flatMap(reviewImage -> reviewImage.getImageUrls().stream())
+                .collect(Collectors.toList()));
         dto.setCreated_at(entity.getCreated_at());
         dto.setProduct_id(entity.getProduct().getId());
         dto.setUser_id(entity.getUser().getId());
@@ -64,22 +68,43 @@ public class ReviewImpl implements ReviewService{
     }
 
     @Override
-    public ReviewDto addReview(ReviewDto review, Long product_id, UserDetails userDetails, MultipartFile file) {
+    public ReviewDto addReview(ReviewDto reviewDto, Long product_id, UserDetails userDetails, MultipartFile[] files) {
+        // Fetch the product and user
         Optional<Product> opProduct = productRepository.findProductById(product_id);
         String username = userDetails.getUsername();
-
         Optional<User> opUser = userRepository.findFirstByEmail(username);
-        if(opProduct.isPresent() && opUser.isPresent()) {
-            Review entity = DtoToEntity(review);
+
+        if (opProduct.isPresent() && opUser.isPresent()) {
+            // Convert DTO to Review entity
+            Review entity = DtoToEntity(reviewDto);
             entity.setProduct(opProduct.get());
             entity.setUser(opUser.get());
-            ReviewImageDto imageDto = imageService.uploadReviewImage(file);
-            entity.setImage_url(imageDto.getImageUrl());
-            Review saved = reviewRepository.save(entity);
-            return EntityToDto(saved);
+
+            // Save the Review entity first
+            Review savedReview = reviewRepository.save(entity);
+
+            // Upload images and get URLs
+            List<String> urls = imageService.uploadReviewImages(files);
+
+            // Create and save ReviewImage entities using the savedReview
+            List<ReviewImage> reviewImages = urls.stream()
+                    .map(url -> {
+                        ReviewImage reviewImage = new ReviewImage();
+                        reviewImage.setImageUrls(List.of(url));
+                        reviewImage.setReview(savedReview); // Use the savedReview with a valid ID
+                        return reviewImage;
+                    })
+                    .collect(Collectors.toList());
+
+            // Save ReviewImage entities to the repository
+            reviewImageRepository.saveAll(reviewImages);
+
+            // Convert the saved Review entity to DTO and return
+            return EntityToDto(savedReview);
         }
         return null;
     }
+
 
     @Override
     public ReviewDto getReviewById(Long reviewId) {
@@ -132,6 +157,4 @@ public class ReviewImpl implements ReviewService{
         }
         return null;
     }
-
-
 }

@@ -8,4 +8,7 @@ import org.springframework.data.repository.query.Param;
 public interface ReviewImageRepository extends JpaRepository<ReviewImage, Long> {
     @Query(value = "SELECT r.* FROM ReviewImage r WHERE r.image_url = :imageName", nativeQuery = true)
     ReviewImage findByImage_url(@Param("imageName") String imageName);
+
+    @Query(value = "SELECT r.* FROM ReveiwImage r WHERE r.id = :id", nativeQuery = true)
+    ReviewImage getById(@Param("id")Long id);
 }
