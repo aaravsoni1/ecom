@@ -30,19 +30,26 @@ public class ReviewController {
 
     @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createReview(@AuthenticationPrincipal UserDetails userDetails,
-                                          @ModelAttribute ReviewDto dto,   // Use @ModelAttribute for text data
-                                          @RequestParam("file") MultipartFile [] files,  // Use @RequestParam for file
-                                          @RequestParam Long productId)
-    {
-        if(reviewService.verifyUser(userDetails, productId)==null){
-            ReviewDto added = reviewService.addReview(dto, productId, userDetails, files);
-                return new ResponseEntity<>(added, HttpStatus.CREATED);
-        }
-        else{
+                                          @ModelAttribute ReviewDto dto,
+                                          @RequestParam("file") MultipartFile[] files,
+                                          @RequestParam Long productId) {
+        // Debugging log to check if the ReviewDto is populated correctly
+        System.out.println("Review DTO: " + dto);
 
-            return new ResponseEntity<>("User has already posted a review.", HttpStatus.OK);
+        // Verify if the user has already posted a review
+        if (reviewService.verifyUser(userDetails, productId) == null) {
+            // Add review
+            ReviewDto added = reviewService.addReview(dto, productId, userDetails, files);
+
+            // Debugging log to check if the returned DTO is correct
+            System.out.println("Added Review DTO: " + added);
+
+            return new ResponseEntity<>(added, HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>("User has already posted a review.", HttpStatus.CONFLICT);
         }
     }
+
 
     @PutMapping(value = "/update/{reviewid}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateReview(@PathVariable Long reviewid , @RequestBody ReviewDto dto){

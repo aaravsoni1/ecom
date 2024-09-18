@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -49,14 +50,22 @@ public class ReviewImpl implements ReviewService{
         dto.setId(entity.getId());
         dto.setComment(entity.getComment());
         dto.setRating(entity.getRating());
-        dto.setImage_url(entity.getReviewImages().stream()
-                .flatMap(reviewImage -> reviewImage.getImageUrls().stream())
-                .collect(Collectors.toList()));
+
+        // Null check for reviewImages
+        if (entity.getReviewImages() != null) {
+            dto.setImage_url(entity.getReviewImages().stream()
+                    .flatMap(reviewImage -> reviewImage.getImageUrls().stream())
+                    .collect(Collectors.toList()));
+        } else {
+            dto.setImage_url(Collections.emptyList()); // Set an empty list if no images
+        }
+
         dto.setCreated_at(entity.getCreated_at());
         dto.setProduct_id(entity.getProduct().getId());
         dto.setUser_id(entity.getUser().getId());
         return dto;
     }
+
 
     public Review DtoToEntity(ReviewDto dto){
         Review entity = new Review();
