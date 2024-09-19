@@ -85,6 +85,7 @@ public class PaymentServiceImpl implements PaymentService{
         paymentDTO.setPaymentMethod(payment.getPaymentMethod());
         paymentDTO.setAmount(payment.getAmount());
         paymentDTO.setPaymentStatus(payment.getPaymentStatus());
+        paymentDTO.setPaymentDate(payment.getPaymentDate());
         return paymentDTO;
     }
 
