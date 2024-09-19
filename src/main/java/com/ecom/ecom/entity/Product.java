@@ -43,7 +43,8 @@ public class Product {
     @Column(name = "updated_at")
     private Date updated_at;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "category_id", nullable = false) // Foreign key to Category
-//    private Category category;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
 }
