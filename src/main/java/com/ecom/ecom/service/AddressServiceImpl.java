@@ -6,6 +6,7 @@ import com.ecom.ecom.payload.AddressDto;
 import com.ecom.ecom.repository.AddressRepository;
 import com.ecom.ecom.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -18,13 +19,17 @@ public class AddressServiceImpl implements AddressService{
     private UserRepository userRepository;
 
     @Override
-    public AddressDto saveAddress(AddressDto addressDto) {
+    public AddressDto saveAddress(AddressDto addressDto, UserDetails userDetails) {
         Address address = convertToEntity(addressDto);
-
-        if(addressDto.getUserId() != null){
-            Optional<User> userOpt= userRepository.findById(addressDto.getUserId());
-            userOpt.ifPresent(address::setUser);
+        Optional<User>opUser = userRepository.findFirstByEmail(userDetails.getUsername());
+        if (opUser.isPresent()) {
+            address.setUser(opUser.get());
         }
+//        if(addressDto.getUserId() != null){
+//            Optional<User> userOpt= userRepository.findById(addressDto.getUserId());
+//
+//            userOpt.ifPresent(address::setUser);
+//        }
         Address savedAddress = addressRepository.save(address);
         return convertToDto(savedAddress);
     }
@@ -79,7 +84,6 @@ public class AddressServiceImpl implements AddressService{
 
     private Address convertToEntity(AddressDto addressDto){
         Address address = new Address();
-        address.setId(addressDto.getId());
         address.setName(addressDto.getName());
         address.setStreet(addressDto.getStreet());
         address.setCity(addressDto.getCity());

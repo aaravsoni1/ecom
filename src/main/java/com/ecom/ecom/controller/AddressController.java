@@ -6,6 +6,8 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,8 +18,8 @@ public class AddressController {
     private AddressService addressService;
 
     @PostMapping("/add")
-    public ResponseEntity<AddressDto> saveAddress(@Valid @RequestBody AddressDto addressDto){
-        AddressDto createdAddress = addressService.saveAddress(addressDto);
+    public ResponseEntity<AddressDto> saveAddress(@AuthenticationPrincipal UserDetails userDetails ,@RequestBody AddressDto addressDto){
+        AddressDto createdAddress = addressService.saveAddress(addressDto, userDetails);
         return new ResponseEntity<>(createdAddress, HttpStatus.CREATED);
     }
 
@@ -39,9 +41,9 @@ public class AddressController {
         return new ResponseEntity<>(updatedAddress, HttpStatus.OK);
     }
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteAddress(@PathVariable Long id) {
+    public ResponseEntity<?> deleteAddress(@PathVariable Long id) {
         addressService.deleteAddress(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>("Address Delete Successfully!", HttpStatus.NO_CONTENT);
     }
 
 }
