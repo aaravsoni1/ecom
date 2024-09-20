@@ -103,4 +103,28 @@ public class BucketService {
         }
         else throw new UnexpectedException("Unable to Upload Images");
     }
+
+    public List<String> uploadMultipleProductImageFiles(MultipartFile[] files, String bucketName) throws IOException {
+        if (files.length!=0) {
+            List<String> image_url_list = new ArrayList<String>();
+            for (MultipartFile file : files) {
+                try {
+                    File conFile = new File(System.getProperty("java.io.tmpdir") + "/" + file.getOriginalFilename());
+                    file.transferTo(conFile);
+                    String folderPath = "product_images/";
+                    String key = folderPath + conFile.getName();
+                    amazonS3.putObject(bucketName, key, conFile);
+                    image_url_list.add(amazonS3.getUrl(bucketName, key).toString());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return image_url_list;
+        }
+        else throw new UnexpectedException("Unable to Upload Images");
+    }
+
+    public void deleteProductImage(String bucketName, String filename) {
+
+    }
 }

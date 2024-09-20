@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,11 +33,8 @@ public class Product {
     @Column(name = "stock", nullable = false)
     private String stock;
 
-    @Column(name = "img_url", nullable = false)
-    private String img_url;
-
     @Temporal(TemporalType.DATE)
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at")
     private Date created_at;
 
     @Temporal(TemporalType.DATE)
@@ -46,5 +44,8 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ProductImage> productImages = new ArrayList<>();
 
 }

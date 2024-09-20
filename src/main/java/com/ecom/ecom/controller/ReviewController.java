@@ -2,20 +2,16 @@ package com.ecom.ecom.controller;
 
 import com.ecom.ecom.entity.User;
 import com.ecom.ecom.payload.ReviewDto;
-import com.ecom.ecom.repository.UserRepository;
 import com.ecom.ecom.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.management.BadAttributeValueExpException;
 import java.util.List;
 
 @RestController
@@ -25,24 +21,15 @@ public class ReviewController {
     @Autowired
     private ReviewService reviewService;
 
-    @Autowired
-    private UserRepository userRepo;
-
     @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createReview(@AuthenticationPrincipal UserDetails userDetails,
                                           @ModelAttribute ReviewDto dto,
                                           @RequestParam("file") MultipartFile[] files,
                                           @RequestParam Long productId) {
-        // Debugging log to check if the ReviewDto is populated correctly
-        System.out.println("Review DTO: " + dto);
 
-        // Verify if the user has already posted a review
         if (reviewService.verifyUser(userDetails, productId) == null) {
-            // Add review
-            ReviewDto added = reviewService.addReview(dto, productId, userDetails, files);
 
-            // Debugging log to check if the returned DTO is correct
-            System.out.println("Added Review DTO: " + added);
+            ReviewDto added = reviewService.addReview(dto, productId, userDetails, files);
 
             return new ResponseEntity<>(added, HttpStatus.CREATED);
         } else {

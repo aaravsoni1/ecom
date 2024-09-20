@@ -17,11 +17,11 @@ public class ImageController {
     @Autowired
     private ReviewImageService reviewImageService;
 
-    @PostMapping("/upload/productImage/{bucketName}")
-    public ResponseEntity<?> uploadProductFile(@RequestParam MultipartFile file,
-                                     @PathVariable String bucketName) {
-        return new ResponseEntity<>(productImageService.uploadImage(file, bucketName), HttpStatus.OK);
-    }
+//    @PostMapping("/upload/productImage/{bucketName}")
+//    public ResponseEntity<?> uploadProductFile(@RequestParam MultipartFile file,
+//                                     @PathVariable String bucketName) {
+//        return new ResponseEntity<>(productImageService.uploadImage(file), HttpStatus.OK);
+//    }
 
 //    @PostMapping("/upload/reviewImage/{bucketName}")
 //    public ResponseEntity<?> uploadReviewFile(@RequestParam MultipartFile file,

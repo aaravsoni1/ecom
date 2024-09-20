@@ -39,6 +39,7 @@ public class CategoryServiceImpl implements CategoryService{
     // Convert DTO to Entity
     private Category DtoToEntity(CategoryDto dto) {
         Category entity = new Category();
+        entity.setId(dto.getId());
         entity.setName(dto.getName());
         entity.setDescription(dto.getDescription());
         return entity;
@@ -48,8 +49,11 @@ public class CategoryServiceImpl implements CategoryService{
     public CategoryDto updateCategory(Long categoryId, CategoryDto dto) {
         Optional<Category> optionalCategory = categoryRepository.findById(categoryId);
         if(optionalCategory.isPresent()){
-            Category category = DtoToEntity(dto);
-            return EntityToDto(category);
+            Category category = optionalCategory.get();
+            category.setName(dto.getName());
+            category.setDescription(dto.getDescription());
+            Category save = categoryRepository.save(category);
+            return EntityToDto(save);
         }
         return null;
     }

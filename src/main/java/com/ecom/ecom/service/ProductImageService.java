@@ -1,8 +1,11 @@
 package com.ecom.ecom.service;
 
-import com.ecom.ecom.payload.PorductImageDto;
+import com.ecom.ecom.payload.ProductImageDto;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 public interface ProductImageService {
-    PorductImageDto uploadImage(MultipartFile file, String bucketName);
+    List<String> uploadImage(MultipartFile[] file);
+    String deleteProductImage(String filename);
 }

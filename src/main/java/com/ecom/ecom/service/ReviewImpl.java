@@ -5,7 +5,6 @@ import com.ecom.ecom.entity.Review;
 import com.ecom.ecom.entity.ReviewImage;
 import com.ecom.ecom.entity.User;
 import com.ecom.ecom.payload.ReviewDto;
-import com.ecom.ecom.payload.ReviewImageDto;
 import com.ecom.ecom.repository.ProductRepository;
 import com.ecom.ecom.repository.ReviewImageRepository;
 import com.ecom.ecom.repository.ReviewRepository;
@@ -98,7 +97,6 @@ public class ReviewImpl implements ReviewService{
             // Create and save ReviewImage entities using the savedReview
             List<ReviewImage> reviewImages = urls.stream()
                     .map(url -> {
-                        System.out.println("Saving image URL: " + url);  // Debugging line
                         ReviewImage reviewImage = new ReviewImage();
                         reviewImage.setImageUrls(Collections.singletonList(url));
                         reviewImage.setReview(savedReview);

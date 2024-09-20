@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -14,22 +16,13 @@ public class ProductImage {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "image_url", nullable = false, length = 2000)
-    private String image_url;
+    @ElementCollection // This annotation specifies that we are storing a list of values
+    @CollectionTable(name = "product_image_urls", joinColumns = @JoinColumn(name = "product_id"))
+    @Column(name = "image_url", nullable = false)
+    private List<String> image_url;
 
-    public Long getId() {
-        return id;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Product product;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getImage_url() {
-        return image_url;
-    }
-
-    public void setImage_url(String image_url) {
-        this.image_url = image_url;
-    }
 }

@@ -18,7 +18,7 @@ public class CategoryController {
     @PostMapping("/add")
     public ResponseEntity<?> addCategory(@RequestBody CategoryDto dto){
         CategoryDto categoryDto = categoryService.addCategory(dto);
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+        return new ResponseEntity<>(categoryDto, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

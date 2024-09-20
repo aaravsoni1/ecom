@@ -5,6 +5,7 @@ import com.ecom.ecom.entity.Review;
 import com.ecom.ecom.entity.ReviewImage;
 import com.ecom.ecom.payload.ReviewImageDto;
 import com.ecom.ecom.repository.ReviewImageRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,7 +20,8 @@ public class ReviewImageServiceImpl implements ReviewImageService{
     private BucketService bucketService;
     private ReviewImageRepository imageRepository;
 
-    private final String bucketName = "projectecom1";
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucketName;
 
     public ReviewImageServiceImpl(BucketService bucketService, ReviewImageRepository imageRepository) {
         this.bucketService = bucketService;
@@ -30,10 +32,7 @@ public class ReviewImageServiceImpl implements ReviewImageService{
     @Override
     public ReviewImageDto deleteReviewImage(String fileName) {
         ReviewImage image = imageRepository.findByImage_url(fileName);
-        if(image!= null){
-            imageRepository.delete(image);
-            bucketService.deleteReviewImage(bucketName, fileName);
-        }
+
 
         return null;
     }
