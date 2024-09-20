@@ -125,6 +125,12 @@ public class BucketService {
     }
 
     public void deleteProductImage(String bucketName, String filename) {
-
+        try {
+            String key = extractKeyFromUrl(filename, bucketName);
+            DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(bucketName, key);
+            amazonS3.deleteObject(deleteObjectRequest);
+        } catch (SdkClientException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

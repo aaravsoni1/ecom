@@ -93,16 +93,21 @@ public class ProductImpl implements ProductService {
         } else {
             dto.setImg_url(Collections.emptyList()); // Set an empty list if no images
         }
+        dto.setUpdated_at(entity.getUpdated_at());
         return dto;
     }
 
     @Override
-    public ProductDto updateProduct(ProductDto product,Long categoryId) {
-        Optional<Product> byId = productRepository.findById(product.getId());
-        if (byId.isPresent()) {
-            Product entity = DtoToEntity(product);
-            entity.setUpdated_at(new Date());
-            Product saved = productRepository.save(entity);
+    public ProductDto updateProduct(ProductDto productDto,Long id) {
+        Optional<Product> optionalProduct = productRepository.findById(id);
+        if (optionalProduct.isPresent()) {
+            Product product = optionalProduct.get();
+            product.setName(productDto.getName());
+            product.setDescription(productDto.getDescription());
+            product.setPrice(productDto.getPrice());
+            product.setStock(productDto.getStock());
+            product.setUpdated_at(new Date());
+            Product saved = productRepository.save(product);
             return EntityToDto(saved);
         }
         return null;

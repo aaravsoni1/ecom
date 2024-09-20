@@ -17,15 +17,19 @@ public class ImageController {
     @Autowired
     private ReviewImageService reviewImageService;
 
-//    @PostMapping("/upload/productImage/{bucketName}")
-//    public ResponseEntity<?> uploadProductFile(@RequestParam MultipartFile file,
-//                                     @PathVariable String bucketName) {
-//        return new ResponseEntity<>(productImageService.uploadImage(file), HttpStatus.OK);
-//    }
+    @PostMapping("/upload/productImage")
+    public ResponseEntity<?> uploadProductFile(@RequestParam MultipartFile[] file) {
+        return new ResponseEntity<>(productImageService.uploadImage(file), HttpStatus.OK);
+    }
 
-//    @PostMapping("/upload/reviewImage/{bucketName}")
-//    public ResponseEntity<?> uploadReviewFile(@RequestParam MultipartFile file,
-//                                                   @PathVariable String bucketName) {
-//        return new ResponseEntity<>(reviewImageService.uploadReviewImage(file), HttpStatus.OK);
-//    }
+    @PostMapping("/upload/reviewImage/{bucketName}")
+    public ResponseEntity<?> uploadReviewFile(@RequestParam MultipartFile[] file) {
+        return new ResponseEntity<>(reviewImageService.uploadReviewImages(file), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/productImage")
+    public ResponseEntity<?> deleteProductImage(@RequestParam String imageUrl) {
+        productImageService.deleteProductImage(imageUrl);
+        return new ResponseEntity<>("Product Image deleted successfully", HttpStatus.OK);
+    }
 }
